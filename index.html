@@ -233,6 +233,12 @@ h1 { font-weight: 400; display: flex; flex-direction: column; align-items: cente
 .reveal > * { animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both; animation-delay: calc(var(--i, 0) * 0.16s + 0.15s); }
 @keyframes rise { from { opacity: 0; transform: translateY(2.5cqw); } to { opacity: 1; transform: none; } }
 :root[data-style="gold"] .reveal .t1 { animation: glow 2.2s ease-out both 0.1s, breathe 4.5s ease-in-out infinite 2.4s; }
+:root[data-style="gold"] .reveal .t1 { animation: breathe 4.5s ease-in-out infinite 3.66s; text-shadow: none; padding: 0; line-height: 0; }
+.script { display: block; width: 84cqw; height: auto; overflow: visible; margin: 1cqw 0 2.5cqw; filter: drop-shadow(0 0 0.5cqw #ffe28a) drop-shadow(0 0 1.6cqw #ffbf1f) drop-shadow(0 0 4.5cqw rgba(255, 170, 0, 0.6)); }
+.ltr { fill: #fff1b8; stroke: #fff4c6; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
+.reveal .ltr { animation: ink var(--d) cubic-bezier(0.4, 0, 0.3, 1) both var(--t); }
+@keyframes ink { 0% { stroke-dashoffset: 1; fill-opacity: 0; } 72% { stroke-dashoffset: 0; fill-opacity: 0.12; } 100% { stroke-dashoffset: 0; fill-opacity: 1; stroke-width: 2; } }
+:root[data-style="gold"] .reveal .t2 .ch { animation-delay: calc(var(--k) * 0.12s + 3.66s); }
 @keyframes glow { from { opacity: 0; filter: blur(0.06em) brightness(0.4); } 60% { opacity: 1; filter: blur(0) brightness(1.5); } to { opacity: 1; filter: none; } }
 @keyframes breathe { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.22); } }
 .reveal .t2 .ch, :root[data-style="snow"] .reveal .t1 .ch { animation: pop 0.6s cubic-bezier(0.2, 1.4, 0.4, 1) both; animation-delay: calc(var(--k) * 0.09s + 0.9s); }
@@ -251,8 +257,13 @@ h1 { font-weight: 400; display: flex; flex-direction: column; align-items: cente
 .p-kicker { margin: 0; font: 600 12px/1.3 var(--sans); letter-spacing: 0.28em; text-transform: uppercase; color: var(--p-soft); }
 .panel h2 { margin: 2px 0 0; font: 400 64px/1.15 var(--script); color: var(--accent); }
 .p-sub b { color: var(--p-ink); font-weight: 700; }
-.ages { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.ages .fld { min-width: 0; }
+.ages { display: flex; flex-direction: column; gap: 10px; }
+.kid { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; align-items: center; gap: 10px; }
+.kid .who { font: 600 12px/1.2 var(--sans); letter-spacing: 0.14em; text-transform: uppercase; color: var(--p-soft); }
+.seg { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--f-line); border-radius: 12px; overflow: hidden; background: var(--f-bg); }
+.seg button { font: 600 14px/1 var(--sans); letter-spacing: 0.04em; color: var(--p-ink); background: transparent; border: 0; padding: 15px 13px 13px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--f-line); }
+.seg button[aria-pressed="true"] { background: var(--btn); color: var(--btn-ink); }
 .ages-h { margin: 0 0 -6px; font: 400 14px/1.4 var(--sans); color: var(--p-soft); }
 select { font: 400 16px/1.2 var(--sans); color: var(--p-ink); background-color: var(--f-bg); border: 1px solid var(--f-line); border-radius: 12px; padding: 13px 10px 11px; width: 100%; }
 select option { color: #1d1d1d; background: #ffffff; }
@@ -279,7 +290,7 @@ input::placeholder { color: var(--p-soft); opacity: 0.7; }
 [hidden] { display: none !important; }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal > *, .reveal .t1, .reveal .t2 .ch, .reveal .t1 .ch, .reveal .wipe, .sway, .twinkle, .draw, .pulse, .foil, .drop, .rock, .spin, .breathe, .reveal .datebar .num, .reveal .datebar .side, .cta::after, .send::after { animation: none !important; }
+  .reveal > *, .reveal .t1, .reveal .t2 .ch, .reveal .t1 .ch, .reveal .wipe, .sway, .twinkle, .draw, .pulse, .foil, .drop, .rock, .spin, .breathe, .reveal .ltr, .reveal .datebar .num, .reveal .datebar .side, .cta::after, .send::after { animation: none !important; }
   .pen { display: none !important; }
   .hang, .float, .rockimg { animation: none !important; }
 }
@@ -363,7 +374,7 @@ input::placeholder { color: var(--p-soft); opacity: 0.7; }
             <div class="fld"><span class="lab" id="l-kd">Kids</span>
               <div class="step" role="group" aria-labelledby="l-kd"><button type="button" id="kd-minus" aria-label="One fewer kid">&minus;</button><output id="kd">0</output><button type="button" id="kd-plus" aria-label="One more kid">+</button></div></div>
           </div>
-          <p class="ages-h" id="ages-h" hidden>Age of each kid, so we can plan gifts:</p>
+          <p class="ages-h" id="ages-h" hidden>Age and boy or girl for each kid, so we can plan gifts:</p>
           <div class="ages" id="ages" hidden></div>
           <div class="fld">
             <label for="f-note">Notes (optional)</label>
@@ -393,12 +404,13 @@ const SOURCE = "ref-g1";
 const ENTRY = { name: "entry.83206186", adults: "entry.376751756", kids: "entry.1645030787", note: "entry.1788446258" };
 
 const TITLES = {
-  gold:  { kicker: "You are invited to our", t1: "Christmas", t2: "PARTY", split2: true },
+  gold:  { kicker: "You are invited to our", t1: "Christmas", t2: "PARTY", svg1: true, split2: true },
   red:   { kicker: "You're invited", t1: "Christmas", t2: "Party", wipe1: true, wipe2: true },
   green: { kicker: "Please join us for a", t1: "Christmas", t2: "PARTY", wipe1: true, foil1: true, split2: true },
   night: { kicker: "You're invited", t1: "Christmas Party", t2: "", wipe1: true },
   snow:  { kicker: "Come celebrate at our", t1: "CHRISTMAS", t2: "Party", split1: true, wipe2: true }
 };
+const SCRIPT_SVG = '<svg class="script" viewBox="0 -866 3294 1033" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path class="ltr" pathLength="1" style="--d:0.95s;--t:0.45s" d="M371 107Q280 107 209.5 70.5Q139 34 99.5 -37.5Q60 -109 60 -213Q60 -275 76.0 -337.0Q92 -399 119.5 -456.0Q147 -513 181 -561Q166 -621 166 -691Q166 -744 178 -792Q182 -806 192 -806Q200 -806 199 -796Q196 -776 194.0 -753.5Q192 -731 192 -700Q192 -642 203 -590Q213 -603 223 -614Q264 -659 320.0 -698.5Q376 -738 444.5 -762.0Q513 -786 590 -786Q662 -786 722.0 -759.5Q782 -733 818.5 -683.5Q855 -634 855 -564Q855 -520 831.5 -474.0Q808 -428 764.5 -389.5Q721 -351 659.5 -327.0Q598 -303 522 -303Q422 -303 339.0 -347.0Q256 -391 210 -481Q170 -410 151.0 -337.0Q132 -264 132 -198Q132 -102 164.0 -42.0Q196 18 252.5 46.5Q309 75 382 75Q512 75 610.5 9.5Q709 -56 773 -193Q785 -193 785 -184Q723 -36 615.5 35.5Q508 107 371 107ZM253 -548Q240 -530 228 -511Q263 -429 335.0 -379.0Q407 -329 516 -329Q585 -329 639.5 -350.0Q694 -371 731.5 -406.0Q769 -441 789.0 -483.5Q809 -526 809 -569Q809 -622 780.5 -662.0Q752 -702 703.0 -724.5Q654 -747 592 -747Q530 -747 467.5 -721.0Q405 -695 349.5 -650.0Q294 -605 253 -548Z"/><path class="ltr" pathLength="1" style="--d:0.5s;--t:1.04s" d="M753 8Q795 -78 840.5 -172.5Q886 -267 934.0 -363.0Q982 -459 1029 -546Q1046 -576 1060.5 -593.0Q1075 -610 1099 -610Q1108 -610 1120.0 -607.0Q1132 -604 1143 -606Q1130 -592 1107.5 -557.0Q1085 -522 1057.5 -473.0Q1030 -424 999.5 -367.5Q969 -311 939.5 -253.5Q910 -196 885 -146Q905 -172 926.0 -195.0Q947 -218 967 -235Q989 -255 1022.5 -277.0Q1056 -299 1089.5 -315.0Q1123 -331 1143 -331Q1150 -331 1153 -330Q1153 -330 1142.0 -310.0Q1131 -290 1114.5 -259.0Q1098 -228 1080.5 -192.0Q1063 -156 1050.0 -123.5Q1037 -91 1033 -70Q1030 -54 1030 -43Q1030 -27 1036.0 -21.5Q1042 -16 1049 -16Q1066 -16 1085.5 -33.5Q1105 -51 1124.0 -78.0Q1143 -105 1159.5 -135.5Q1176 -166 1186 -193Q1198 -193 1198 -184Q1187 -157 1170.5 -124.5Q1154 -92 1133.0 -63.0Q1112 -34 1087.0 -15.0Q1062 4 1034 4Q1014 4 993.0 -10.0Q972 -24 972 -61Q972 -72 974.0 -84.5Q976 -97 981 -113Q987 -133 1001.0 -157.5Q1015 -182 1037 -219Q1047 -236 1047 -246Q1047 -258 1035 -258Q1025 -258 1008.0 -248.0Q991 -238 965 -213Q940 -189 903.0 -143.0Q866 -97 824 -14Q817 -1 808.5 -0.5Q800 0 786 1Q777 2 768.0 2.5Q759 3 753 8Z"/><path class="ltr" pathLength="1" style="--d:0.5s;--t:1.33s" d="M1187 -196Q1195 -213 1208.0 -250.5Q1221 -288 1235.0 -334.0Q1249 -380 1256 -421Q1259 -437 1267.0 -444.5Q1275 -452 1284 -452Q1297 -452 1308.0 -439.5Q1319 -427 1319 -404Q1319 -376 1302.5 -356.0Q1286 -336 1262 -318Q1272 -317 1283.0 -316.5Q1294 -316 1307 -316Q1354 -316 1400 -322Q1402 -316 1402 -313Q1402 -300 1394.5 -280.0Q1387 -260 1379 -244Q1375 -235 1363.0 -211.5Q1351 -188 1337.0 -158.5Q1323 -129 1313.5 -100.5Q1304 -72 1304 -52Q1304 -26 1324 -26Q1343 -26 1377.0 -70.5Q1411 -115 1445 -193Q1457 -193 1457 -184Q1446 -157 1429.5 -125.0Q1413 -93 1393.0 -64.5Q1373 -36 1350.0 -17.5Q1327 1 1302 1Q1283 1 1264.0 -14.5Q1245 -30 1245 -65Q1245 -96 1257.0 -125.5Q1269 -155 1284.0 -181.0Q1299 -207 1311.0 -227.0Q1323 -247 1323 -259Q1323 -277 1300.5 -285.0Q1278 -293 1242 -294Q1224 -248 1215.0 -226.0Q1206 -204 1198 -184Q1182 -184 1187 -196Z"/><path class="ltr" pathLength="1" style="--d:0.5s;--t:1.62s" d="M1473 0Q1436 0 1421.0 -21.5Q1406 -43 1406 -71Q1406 -86 1409.5 -101.5Q1413 -117 1418 -130L1485 -301Q1488 -309 1488 -315Q1488 -325 1483.0 -332.5Q1478 -340 1476 -343L1531 -345Q1546 -346 1552.5 -341.5Q1559 -337 1559 -331Q1559 -325 1552 -309Q1542 -285 1525.0 -249.0Q1508 -213 1491.5 -175.0Q1475 -137 1463.5 -104.0Q1452 -71 1452 -53Q1452 -40 1458.5 -31.0Q1465 -22 1481 -22Q1502 -22 1522.5 -38.5Q1543 -55 1561.0 -81.0Q1579 -107 1594.5 -137.0Q1610 -167 1621 -193Q1633 -193 1633 -184Q1623 -159 1607.0 -127.0Q1591 -95 1570.5 -66.5Q1550 -38 1525.5 -19.0Q1501 0 1473 0ZM1562 -407Q1549 -407 1539.5 -417.0Q1530 -427 1530 -441Q1530 -458 1544.0 -471.5Q1558 -485 1575 -485Q1589 -485 1599.0 -476.0Q1609 -467 1609 -453Q1609 -435 1595.0 -421.0Q1581 -407 1562 -407Z"/><path class="ltr" pathLength="1" style="--d:0.5s;--t:1.91s" d="M1642 4Q1601 4 1575.5 -21.5Q1550 -47 1550 -75Q1550 -98 1561.5 -117.5Q1573 -137 1592 -137L1593 -139Q1615 -179 1635.5 -220.5Q1656 -262 1681 -309Q1702 -348 1726.5 -373.0Q1751 -398 1784 -398Q1792 -398 1806.0 -394.5Q1820 -391 1820 -380Q1820 -372 1811 -372Q1804 -372 1795.5 -376.0Q1787 -380 1782 -380Q1763 -380 1750.0 -358.0Q1737 -336 1737 -311Q1737 -284 1746.0 -262.5Q1755 -241 1767.0 -221.0Q1779 -201 1788.0 -180.5Q1797 -160 1797 -136Q1797 -88 1778.5 -58.5Q1760 -29 1730 -14H1731Q1784 -14 1818.5 -63.5Q1853 -113 1887 -193Q1899 -193 1899 -184Q1880 -139 1857.0 -96.0Q1834 -53 1803.0 -25.0Q1772 3 1727 3Q1708 3 1692 -1Q1669 4 1642 4ZM1627 -102Q1627 -78 1638.0 -56.0Q1649 -34 1678 -23Q1704 -38 1718.5 -69.5Q1733 -101 1733 -135Q1733 -163 1727.0 -192.0Q1721 -221 1714.5 -249.0Q1708 -277 1708 -299Q1708 -306 1708.5 -311.5Q1709 -317 1710 -322Q1692 -295 1673.5 -259.0Q1655 -223 1638.0 -190.0Q1621 -157 1607 -136Q1627 -133 1627 -102ZM1594 -52Q1594 -36 1605.0 -24.0Q1616 -12 1638 -12Q1648 -12 1657 -14Q1636 -27 1623.5 -47.0Q1611 -67 1611 -93Q1602 -83 1598.0 -72.5Q1594 -62 1594 -52Z"/><path class="ltr" pathLength="1" style="--d:0.5s;--t:2.2s" d="M2095 -528Q2082 -509 2066.0 -480.0Q2050 -451 2036.5 -424.0Q2023 -397 2016 -383H2108Q2108 -379 2104.5 -370.0Q2101 -361 2091 -357H2004Q1992 -330 1976.5 -292.0Q1961 -254 1946.5 -213.0Q1932 -172 1922.5 -136.5Q1913 -101 1913 -79Q1913 -49 1921.0 -34.5Q1929 -20 1950 -20Q1977 -20 2002.0 -46.5Q2027 -73 2049.5 -113.0Q2072 -153 2089 -193Q2101 -193 2101 -184Q2090 -157 2074.0 -125.0Q2058 -93 2037.5 -63.5Q2017 -34 1991.5 -15.5Q1966 3 1935 3Q1893 3 1878.0 -20.5Q1863 -44 1863 -81Q1863 -108 1873.0 -146.5Q1883 -185 1897.5 -226.0Q1912 -267 1926.0 -302.5Q1940 -338 1948 -357H1884Q1884 -365 1891.0 -374.0Q1898 -383 1906 -383H1959Q1967 -399 1977.5 -423.0Q1988 -447 2006 -476Q2021 -500 2044.5 -514.0Q2068 -528 2095 -528Z"/><path class="ltr" pathLength="1" style="--d:0.5s;--t:2.49s" d="M1992 5Q2029 -66 2062.0 -137.5Q2095 -209 2129 -273Q2149 -309 2162.5 -323.5Q2176 -338 2199 -338Q2207 -338 2216.0 -335.5Q2225 -333 2234 -333Q2240 -333 2243 -334Q2229 -326 2207.0 -294.5Q2185 -263 2162.0 -222.0Q2139 -181 2121 -145Q2140 -168 2160.5 -191.0Q2181 -214 2206 -235Q2228 -254 2252.5 -276.5Q2277 -299 2301.0 -315.0Q2325 -331 2343 -331Q2350 -331 2352 -330Q2371 -322 2371 -304Q2371 -298 2366 -286Q2353 -252 2332.5 -216.5Q2312 -181 2294 -145Q2309 -163 2331.5 -189.0Q2354 -215 2377 -235Q2399 -255 2433.0 -277.0Q2467 -299 2500.0 -315.0Q2533 -331 2553 -331Q2560 -331 2563 -330Q2563 -330 2552.0 -310.5Q2541 -291 2524.5 -259.5Q2508 -228 2491.0 -192.5Q2474 -157 2460.5 -124.5Q2447 -92 2443 -70Q2440 -57 2440 -46Q2440 -30 2446.0 -25.0Q2452 -20 2459 -20Q2479 -20 2498.5 -37.0Q2518 -54 2537.0 -80.5Q2556 -107 2571.5 -137.0Q2587 -167 2598 -193Q2610 -193 2610 -184Q2599 -157 2582.5 -124.5Q2566 -92 2545.0 -63.0Q2524 -34 2499.0 -15.0Q2474 4 2445 4Q2424 4 2405.5 -10.0Q2387 -24 2387 -62Q2387 -103 2406.5 -144.0Q2426 -185 2447 -219Q2457 -236 2457 -246Q2457 -258 2445 -258Q2435 -258 2417.5 -248.0Q2400 -238 2374 -213Q2358 -198 2336.5 -171.5Q2315 -145 2293.0 -114.0Q2271 -83 2255.0 -53.0Q2239 -23 2234 0Q2219 0 2210.0 -12.5Q2201 -25 2201 -42Q2201 -45 2201.0 -48.0Q2201 -51 2202 -55Q2207 -86 2218.0 -107.5Q2229 -129 2243 -158Q2250 -171 2259.0 -188.5Q2268 -206 2275.0 -222.5Q2282 -239 2282 -250Q2282 -260 2274 -260Q2265 -260 2250.5 -251.0Q2236 -242 2223.0 -230.5Q2210 -219 2203 -213Q2178 -189 2142.5 -144.0Q2107 -99 2065 -16Q2059 -5 2051.0 -2.5Q2043 0 2026 0Q2015 0 2007.5 0.5Q2000 1 1992 5Z"/><path class="ltr" pathLength="1" style="--d:0.5s;--t:2.78s" d="M2815 3Q2792 3 2774.5 -10.0Q2757 -23 2757 -63Q2757 -80 2759.5 -95.0Q2762 -110 2766 -127Q2757 -112 2741.0 -90.0Q2725 -68 2705.5 -47.0Q2686 -26 2665.5 -12.0Q2645 2 2627 2Q2601 2 2585.0 -21.5Q2569 -45 2569 -83Q2569 -124 2588.0 -171.0Q2607 -218 2640.0 -261.0Q2673 -304 2716.0 -331.0Q2759 -358 2806 -358Q2829 -358 2850.0 -350.5Q2871 -343 2887 -326Q2894 -319 2894 -310Q2894 -304 2889.0 -300.0Q2884 -296 2876 -298Q2865 -333 2829 -333Q2812 -333 2790 -322Q2763 -308 2732.5 -277.5Q2702 -247 2675.5 -208.5Q2649 -170 2632.0 -131.0Q2615 -92 2615 -60Q2615 -27 2640 -27Q2662 -27 2685.5 -48.0Q2709 -69 2730.5 -100.5Q2752 -132 2770.0 -163.0Q2788 -194 2798 -213Q2813 -240 2826.0 -258.0Q2839 -276 2863 -276Q2874 -276 2885.0 -273.0Q2896 -270 2908 -272Q2878 -242 2855.5 -201.0Q2833 -160 2821.0 -120.5Q2809 -81 2809 -54Q2809 -24 2829 -24Q2845 -24 2863.5 -42.0Q2882 -60 2899.5 -87.5Q2917 -115 2932.0 -143.5Q2947 -172 2956 -193Q2961 -193 2964.5 -192.0Q2968 -191 2968 -184Q2967 -180 2964.5 -175.5Q2962 -171 2957 -160Q2949 -144 2935.0 -117.0Q2921 -90 2902.0 -62.5Q2883 -35 2861.0 -16.0Q2839 3 2815 3Z"/><path class="ltr" pathLength="1" style="--d:0.5s;--t:3.07s" d="M2977 4Q2936 4 2910.5 -21.5Q2885 -47 2885 -75Q2885 -98 2896.5 -117.5Q2908 -137 2927 -137L2928 -139Q2950 -179 2970.5 -220.5Q2991 -262 3016 -309Q3037 -348 3061.5 -373.0Q3086 -398 3119 -398Q3127 -398 3141.0 -394.5Q3155 -391 3155 -380Q3155 -372 3146 -372Q3139 -372 3130.5 -376.0Q3122 -380 3117 -380Q3098 -380 3085.0 -358.0Q3072 -336 3072 -311Q3072 -284 3081.0 -262.5Q3090 -241 3102.0 -221.0Q3114 -201 3123.0 -180.5Q3132 -160 3132 -136Q3132 -88 3113.5 -58.5Q3095 -29 3065 -14H3066Q3119 -14 3153.5 -63.5Q3188 -113 3222 -193Q3234 -193 3234 -184Q3215 -139 3192.0 -96.0Q3169 -53 3138.0 -25.0Q3107 3 3062 3Q3043 3 3027 -1Q3004 4 2977 4ZM2962 -102Q2962 -78 2973.0 -56.0Q2984 -34 3013 -23Q3039 -38 3053.5 -69.5Q3068 -101 3068 -135Q3068 -163 3062.0 -192.0Q3056 -221 3049.5 -249.0Q3043 -277 3043 -299Q3043 -306 3043.5 -311.5Q3044 -317 3045 -322Q3027 -295 3008.5 -259.0Q2990 -223 2973.0 -190.0Q2956 -157 2942 -136Q2962 -133 2962 -102ZM2929 -52Q2929 -36 2940.0 -24.0Q2951 -12 2973 -12Q2983 -12 2992 -14Q2971 -27 2958.5 -47.0Q2946 -67 2946 -93Q2937 -83 2933.0 -72.5Q2929 -62 2929 -52Z"/></svg>';
 const STYLES = Object.keys(TITLES);
 const $ = (id) => document.getElementById(id);
 
@@ -662,7 +674,8 @@ function applyStyle() {
   document.documentElement.dataset.style = current;
   const T = TITLES[current], t1 = $("t1"), t2 = $("t2");
   $("kicker").textContent = T.kicker;
-  setText(t1, T.t1, T.split1); setText(t2, T.t2, T.split2);
+  if (T.svg1) t1.innerHTML = SCRIPT_SVG; else setText(t1, T.t1, T.split1);
+  setText(t2, T.t2, T.split2);
   t1.className = "t1" + (T.wipe1 ? " wipe" : "") + (T.foil || T.foil1 ? " foil" : "");
   t2.className = "t2" + (T.wipe2 ? (T.wipe1 ? " wipe second" : " wipe") : "") + (T.foil ? " foil" : "");
   $("decor").innerHTML = DECOR[current]();
@@ -678,24 +691,27 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { W 
 if (!still) requestAnimationFrame(frame);
 
 /* ---------- RSVP ---------- */
-const state = { adults: 1, kids: 0, ages: [] };
+const state = { adults: 1, kids: 0, ages: [], sex: [] };
 const AGES = ["0-5", "6-10", "11-17"];
 function drawAges() {
-  const box = $("ages"); box.textContent = ""; state.ages.length = state.kids;
+  const box = $("ages"); box.textContent = ""; state.ages.length = state.kids; state.sex.length = state.kids;
   for (let i = 0; i < state.kids; i++) {
-    const w = document.createElement("div"); w.className = "fld";
-    const l = document.createElement("label"); l.htmlFor = "age-" + i; l.textContent = "Kid " + (i + 1) + " age";
-    const sel = document.createElement("select"); sel.id = "age-" + i;
-    [["", "Choose"]].concat(AGES.map((a) => [a, a + " years"])).forEach((o) => { const op = document.createElement("option"); op.value = o[0]; op.textContent = o[1]; sel.appendChild(op); });
+    const row = document.createElement("div"); row.className = "kid"; row.setAttribute("role", "group"); row.setAttribute("aria-label", "Kid " + (i + 1));
+    const who = document.createElement("span"); who.className = "who"; who.textContent = "Kid " + (i + 1);
+    const sel = document.createElement("select"); sel.id = "age-" + i; sel.setAttribute("aria-label", "Kid " + (i + 1) + " age");
+    [["", "Age"]].concat(AGES.map((a) => [a, a + " years"])).forEach((o) => { const op = document.createElement("option"); op.value = o[0]; op.textContent = o[1]; sel.appendChild(op); });
     sel.value = state.ages[i] || "";
     sel.addEventListener("change", () => { state.ages[i] = sel.value; $("err").hidden = true; paint(true); });
-    w.append(l, sel); box.appendChild(w);
+    const seg = document.createElement("div"); seg.className = "seg";
+    ["Boy", "Girl"].forEach((g) => { const b = document.createElement("button"); b.type = "button"; b.id = "sex-" + i + "-" + g.toLowerCase(); b.textContent = g; b.setAttribute("aria-pressed", String(state.sex[i] === g));
+      b.addEventListener("click", () => { state.sex[i] = g; $("err").hidden = true; seg.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); paint(true); }); seg.appendChild(b); });
+    row.append(who, sel, seg); box.appendChild(row);
   }
   box.hidden = $("ages-h").hidden = state.kids === 0;
 }
 function link() {
   const name = $("f-name").value.trim().replace(/\s+/g, " ");
-  const note = ((state.kids ? "Kids ages: " + state.ages.slice(0, state.kids).join(", ") + ". " : "") + $("f-note").value.trim()).trim();
+  const note = ((state.kids ? "Kids: " + state.ages.slice(0, state.kids).map((a, i) => a + " " + (state.sex[i] || "")).join(", ") + ". " : "") + $("f-note").value.trim()).trim();
   const q = [[ENTRY.name, name], [ENTRY.adults, state.adults], [ENTRY.kids, state.kids]];
   q.push([ENTRY.note, (note + " " + SOURCE).trim()]);   // SOURCE marks replies from the final invitation
   q.push(["submit", "Submit"]);
@@ -718,7 +734,7 @@ $("form").addEventListener("submit", (e) => e.preventDefault());
 $("send").addEventListener("click", (e) => {
   const name = $("f-name").value.trim();
   if (!name) { e.preventDefault(); $("err").textContent = "Please add your name first."; $("err").hidden = false; $("f-name").focus(); return; }
-  if (state.ages.slice(0, state.kids).filter(Boolean).length < state.kids) { e.preventDefault(); $("err").textContent = "Please choose an age range for each kid."; $("err").hidden = false; return; }
+  if (state.ages.slice(0, state.kids).filter(Boolean).length < state.kids || state.sex.slice(0, state.kids).filter(Boolean).length < state.kids) { e.preventDefault(); $("err").textContent = "Please choose an age range and Boy or Girl for each kid."; $("err").hidden = false; return; }
   $("send").href = link();
   setTimeout(() => {
     const n = state.adults + state.kids;
