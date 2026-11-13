@@ -563,13 +563,15 @@ function decorGold() {
     b += '<g class="orn" data-i="' + i + '">' +
       '<line x1="' + ORN_X[i] + '" y1="-40" x2="' + ORN_X[i] + '" y2="' + f(y + 6 * sc) + '" stroke="#d8b25e" stroke-width="0.9" stroke-opacity="0.85"/>' +
       '<image href="' + ORN[kinds[i]] + '" x="' + f(x) + '" y="' + f(y) + '" width="' + f(2 * r) + '" height="' + f(h) + '"/>' +
-      '<g clip-path="url(#oc' + i + ')"><g class="refl"><image class="logo-refl" x="' + f(ORN_X[i] - r * 0.62) + '" y="' + f(ORN_Y[i] + r * 0.2) + '" width="' + f(r * 1.24) + '" height="' + f(r * 0.46) + '" preserveAspectRatio="xMidYMid meet" opacity="0.3" style="mix-blend-mode:screen"/></g></g></g>';
+      '<g clip-path="url(#oc' + i + ')"><g class="refl"><image class="logo-refl" x="' + f(ORN_X[i] - r * 0.7) + '" y="' + f(ORN_Y[i] + r * 0.05) + '" width="' + f(r * 1.4) + '" height="' + f(r * 0.7) + '" preserveAspectRatio="xMidYMid meet" opacity="0.75" style="mix-blend-mode:screen"/></g></g></g>';
   });
   return svg("d-top", "0 0 460 170", "100%", b);
 }
 function startSwing() {
   const top = document.querySelector("#decor .d-top"); if (!top) return;
-  const logo = document.querySelector(".brand"); if (logo) top.querySelectorAll(".logo-refl").forEach((im) => im.setAttribute("href", logo.src));
+  const brand = document.querySelector(".brand"), co = [...document.querySelectorAll(".logos img")];
+  const pick = { 0: brand, 6: brand, 3: brand, 1: co[3], 2: co[0], 4: co[1], 5: co[2] };
+  top.querySelectorAll(".orn").forEach((g) => { const src = pick[g.dataset.i], im = g.querySelector(".logo-refl"); if (src && im) { im.setAttribute("href", src.src); if ([1, 3, 5].includes(+g.dataset.i)) { im.style.mixBlendMode = "multiply"; im.setAttribute("opacity", "0.8"); } } });
   const P = [...top.querySelectorAll(".orn")].map((g) => { const i = +g.dataset.i; return { g, x: ORN_X[i], L: ORN_Y[i] + 40, r: ORN_R[i], th: 0, w: 0, ph: Math.random() * 6.28, refl: g.querySelector(".refl") }; });
   let tilt = 0, last = performance.now(), px = null;
   window.addEventListener("deviceorientation", (e) => {
